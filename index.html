@@ -2093,7 +2093,8 @@
     display: inline-flex;
     align-items: center;
     gap: 5px;
-    margin-left: 10px;
+    margin-left: auto;
+    padding-left: 10px;
   }
   .drops-price-input {
     width: 78px;
@@ -2119,7 +2120,7 @@
     .drops-icon { width: 22px; height: 22px; }
     .drops-rune-icon { width: 26px; height: 26px; }
     .drops-item { white-space: normal; }
-    .drops-item-price { margin-left: 0; margin-top: 4px; }
+    .drops-item-price { margin-left: 0; padding-left: 0; margin-top: 4px; }
   }
 
 </style></head>
@@ -2411,6 +2412,11 @@
 <h1>Drops para Venda</h1>
 <p class="subtitle">Listas de referência de páginas específicas do bROWiki, para saber rapidamente quais itens dropados servem para comércio. Defina o preço de cada item em Zenys conforme o mercado do seu servidor.</p>
 </header>
+<section aria-label="Ferramentas" class="toolbar">
+<div class="search-wrap">
+<input autocomplete="off" id="searchInputDrops" placeholder="Buscar item, runa ou poção..." type="search"/>
+</div>
+</section>
 <section aria-labelledby="dropsRunasTitle" class="drops-section">
 <h2 class="drops-section-title" id="dropsRunasTitle">Fabricação de Runas</h2>
 <p class="drops-section-desc">Materiais usados para criar cada runa com a perícia Perícia em Runas (fonte: <a href="https://browiki.org/wiki/Per%C3%ADcia_em_Runas" rel="noopener" target="_blank">bROWiki</a>).</p>
@@ -3409,6 +3415,36 @@
     });
   }
 
+  function applyDropsFilter() {
+    const input = document.getElementById('searchInputDrops');
+    if (!input) return;
+    const query = input.value.trim().toLocaleLowerCase('pt-BR');
+    document.querySelectorAll('#panel-drops .drops-recipe-table tbody').forEach(tbody => {
+      let groupHeaderRow = null;
+      let groupHasVisible = false;
+      const rows = Array.from(tbody.children);
+      rows.forEach((row, index) => {
+        if (row.classList.contains('drops-group-header')) {
+          if (groupHeaderRow) groupHeaderRow.classList.toggle('is-hidden', !groupHasVisible);
+          groupHeaderRow = row;
+          groupHasVisible = false;
+          return;
+        }
+        const matches = !query || row.textContent.toLocaleLowerCase('pt-BR').includes(query);
+        row.classList.toggle('is-hidden', !matches);
+        if (matches) groupHasVisible = true;
+        if (index === rows.length - 1 && groupHeaderRow) {
+          groupHeaderRow.classList.toggle('is-hidden', !groupHasVisible);
+        }
+      });
+    });
+  }
+
+  function initDropsSearch() {
+    const input = document.getElementById('searchInputDrops');
+    if (input) input.addEventListener('input', applyDropsFilter);
+  }
+
   function initDropsPriceInputs() {
     document.querySelectorAll('.drops-price-input').forEach(input => {
       input.addEventListener('change', () => {
@@ -4068,6 +4104,7 @@
 
   initDropsPriceInputs();
   renderDropPrices();
+  initDropsSearch();
 
   const farmMapGeneralTextarea = document.getElementById('generalNotesFarmMap');
   const farmMapNoteWidget = farmMapGeneralTextarea ? createNoteWidget(farmMapGeneralTextarea, {
