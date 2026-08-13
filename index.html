@@ -1033,9 +1033,11 @@
          do texto — toques maiores e mais fáceis de acertar do que uma fileira
          apertada de 4 abas lado a lado. */
       .side-tabs {
-        /* Mesma lógica do desktop: limpa o ícone/foto de login fixos no
-           canto (menores no celular, mas ainda presentes). */
-        top: 56px;
+        /* No celular as abas não ficam mais fixas/grudadas ao rolar: viram
+           parte do fluxo normal da página, como qualquer outro bloco. O
+           margin-top ainda afasta do ícone/foto de login fixos no canto
+           superior direito da tela. */
+        position: static;
         margin-top: 40px;
         display: grid;
         grid-template-columns: 1fr 1fr;
