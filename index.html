@@ -1350,18 +1350,36 @@
     }
 
     .hero {
-      border: 1px solid var(--line);
+      border: 1px solid rgba(44, 80, 102, .5);
       border-radius: 22px;
+      padding-top: 58px;
       background:
-        radial-gradient(circle at 80% -18%, rgba(101, 157, 189, .34), transparent 52%),
-        radial-gradient(circle at 12% 112%, rgba(218, 173, 134, .40), transparent 55%),
-        linear-gradient(170deg, rgba(101, 157, 189, .14) 0%, rgba(255, 253, 248, .92) 42%, rgba(251, 238, 193, .55) 100%);
+        radial-gradient(120% 70% at 82% -12%, rgba(251, 238, 193, .22), transparent 60%),
+        linear-gradient(180deg,
+          #659dbd 0%,
+          #659dbd 6%,
+          #3f7796 15%,
+          #35657f 50%,
+          #2c5066 100%);
       box-shadow: var(--shadow);
     }
-    .hero::after { color: rgba(49, 47, 23, .05); }
-    .eyebrow { color: var(--gold); }
-    h1 { text-shadow: none; color: var(--ink); }
-    .subtitle { color: var(--muted); }
+    .hero::after { color: rgba(255, 255, 255, .10); }
+    .eyebrow { color: rgba(255, 255, 255, .96); }
+    h1 { text-shadow: 0 2px 14px rgba(20, 42, 56, .35); color: #ffffff; }
+    .subtitle { color: rgba(255, 255, 255, .90); }
+
+    /* cartoes de estatistica flutuando sobre o ceu */
+    .hero .stat {
+      border: 1px solid rgba(255, 255, 255, .34);
+      background: linear-gradient(180deg, rgba(255, 253, 248, .96), rgba(251, 238, 193, .84));
+      box-shadow: 0 10px 26px -12px rgba(16, 38, 51, .5);
+    }
+    .hero .progress-shell {
+      border: 1px solid rgba(255, 255, 255, .3);
+      background: rgba(20, 42, 56, .34);
+    }
+    .hero .sync-status { color: rgba(255, 255, 255, .92); }
+    .hero .sync-dot { box-shadow: 0 0 0 3px rgba(255, 255, 255, .18); }
 
     .stat {
       border: 1px solid var(--line);
@@ -2214,7 +2232,7 @@
     h1 {
       letter-spacing: -0.035em;
       line-height: 1.04;
-      background: linear-gradient(112deg, #312f17 20%, #6a6531 62%, #2c5066 100%);
+      background: linear-gradient(104deg, #ffffff 30%, #fbeec1 100%);
       -webkit-background-clip: text;
       background-clip: text;
       -webkit-text-fill-color: transparent;
