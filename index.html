@@ -1438,10 +1438,13 @@
 
     /* ================= SECOES: faixa teal solida ================= */
     .quest-section {
+      position: relative;
       border: 1px solid var(--line);
       border-radius: 20px;
-      background: #ffffff;
+      background: rgba(255, 255, 255, .88);
       box-shadow: var(--shadow);
+      backdrop-filter: var(--glass);
+      -webkit-backdrop-filter: var(--glass);
       overflow: hidden;
     }
     .section-head {
@@ -2276,17 +2279,10 @@
       to   { opacity: 1; transform: none; }
     }
     .tab-panel.active > .hero,
-    .tab-panel.active > .toolbar,
-    .tab-panel.active > .general-notes,
-    .tab-panel.active > .quest-section {
+    .tab-panel.active > .toolbar {
       animation: ldRise .55s cubic-bezier(.16, 1, .3, 1) both;
     }
-    .tab-panel.active > .toolbar { animation-delay: .05s; }
-    .tab-panel.active > .general-notes { animation-delay: .09s; }
-    .tab-panel.active > .quest-section:nth-of-type(1) { animation-delay: .12s; }
-    .tab-panel.active > .quest-section:nth-of-type(2) { animation-delay: .16s; }
-    .tab-panel.active > .quest-section:nth-of-type(3) { animation-delay: .20s; }
-    .tab-panel.active > .quest-section:nth-of-type(n+4) { animation-delay: .24s; }
+    .tab-panel.active > .toolbar { animation-delay: .06s; }
 
     /* ============ Abas ============ */
     .side-tab {
@@ -2422,6 +2418,132 @@
     .note-card:focus-within {
       border-color: rgba(80, 133, 165, .6);
       box-shadow: 0 0 0 4px rgba(143, 193, 227, .3);
+    }
+
+
+    /* ============================================================
+       DESTAQUE DOS CONTAINERS
+       Elevacao feita so com sombra + borda: evita `transform`, que
+       criaria containing block e quebraria menus/overlays internos.
+       ============================================================ */
+    .quest-section, .general-notes, .toolbar {
+      transition: box-shadow .34s cubic-bezier(.16,1,.3,1),
+                  border-color .34s ease, background .34s ease;
+    }
+    .quest-section:hover, .general-notes:hover, .toolbar:hover {
+      border-color: rgba(80, 133, 165, .45);
+      background: rgba(255, 255, 255, .95);
+      box-shadow:
+        0 2px 6px rgba(22, 36, 44, .05),
+        0 26px 56px -18px rgba(49, 112, 142, .38),
+        0 0 0 1px rgba(143, 193, 227, .35);
+    }
+    /* fio de luz que desliza no topo do card ao passar o mouse */
+    .quest-section::after,
+    .general-notes::after {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,.95) 20%,
+                                  rgba(143,193,227,.9) 50%, rgba(255,255,255,.95) 80%, transparent);
+      opacity: 0;
+      transition: opacity .34s ease;
+      pointer-events: none;
+      z-index: 2;
+    }
+    .quest-section:hover::after,
+    .general-notes:hover::after { opacity: 1; }
+    .general-notes { position: relative; overflow: hidden; }
+
+    /* ============================================================
+       HERO: brilho diagonal lento, como luz passando pelo ceu
+       ============================================================ */
+    .hero { position: relative; overflow: hidden; }
+    .hero::before {
+      content: "";
+      position: absolute;
+      top: -60%; bottom: -60%;
+      left: -35%;
+      width: 28%;
+      background: linear-gradient(100deg, transparent, rgba(255,255,255,.16), transparent);
+      transform: rotate(14deg);
+      pointer-events: none;
+      animation: ldSheen 9s ease-in-out infinite;
+    }
+    @keyframes ldSheen {
+      0%, 62% { left: -35%; opacity: 0; }
+      68%     { opacity: 1; }
+      100%    { left: 118%; opacity: 0; }
+    }
+
+    /* ============================================================
+       CARDS DE SPRITE: a imagem cresce um pouco dentro da moldura
+       ============================================================ */
+    .sprite-card .boss-avatar { overflow: hidden; }
+    .sprite-card .boss-avatar img {
+      transition: transform .32s cubic-bezier(.16,1,.3,1), filter .32s ease;
+    }
+    .sprite-card:hover .boss-avatar img {
+      transform: scale(1.11);
+      filter: drop-shadow(0 6px 10px rgba(22, 36, 44, .32));
+    }
+
+    /* ============================================================
+       CABECALHO DE SECAO: leve profundidade interna
+       ============================================================ */
+    .section-head {
+      position: relative;
+      box-shadow: inset 0 -1px 0 rgba(255,255,255,.18),
+                  0 6px 18px -12px rgba(22, 36, 44, .55);
+    }
+
+    /* ============================================================
+       BOTOES: reacao ao clique (pulso de luz)
+       ============================================================ */
+    button { position: relative; overflow: hidden; }
+    button::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at center, rgba(143,193,227,.55), transparent 60%);
+      opacity: 0;
+      transform: scale(.4);
+      pointer-events: none;
+      transition: opacity .45s ease, transform .45s ease;
+    }
+    button:active::after { opacity: 1; transform: scale(1); transition: none; }
+
+    /* ============================================================
+       LINHAS: leve gradiente no hover, alem da barra de acento
+       ============================================================ */
+    .mission-row:hover {
+      background: linear-gradient(90deg, rgba(143,193,227,.28), rgba(143,193,227,.10) 45%, transparent);
+    }
+
+    /* ============================================================
+       REVELACAO AO ROLAR
+       A classe base so e aplicada pelo JS. Sem JS, nada fica oculto.
+       ============================================================ */
+    .reveal-ready {
+      opacity: 0;
+      transform: translate3d(0, 22px, 0);
+      transition: opacity .62s cubic-bezier(.16,1,.3,1),
+                  transform .62s cubic-bezier(.16,1,.3,1);
+      will-change: opacity, transform;
+    }
+    .reveal-ready.reveal-in {
+      opacity: 1;
+      transform: none;
+      will-change: auto;
+    }
+
+    /* ancoras nao ficam escondidas atras da barra de abas fixa */
+    .quest-section { scroll-margin-top: 96px; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .hero::before { animation: none; opacity: 0; }
+      .reveal-ready { opacity: 1; transform: none; }
     }
 
     /* ============ Barra de rolagem ============ */
@@ -5295,5 +5417,70 @@
   applyStateToUi();
   loadLocalPreview();
 })();
-</script></body>
+</script>
+<script>
+/* Efeitos visuais: revelacao ao rolar + barra de progresso animada.
+   Tudo isolado e defensivo: qualquer falha aqui nao pode afetar o app. */
+(function () {
+  try {
+    var reduzir = window.matchMedia &&
+                  window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduzir || !('IntersectionObserver' in window)) return;
+
+    var alvos = document.querySelectorAll(
+      '.tab-panel > .quest-section, .tab-panel > .general-notes'
+    );
+    if (!alvos.length) return;
+
+    var obs = new IntersectionObserver(function (entradas) {
+      entradas.forEach(function (e) {
+        if (e.isIntersecting) {
+          e.target.classList.add('reveal-in');
+          obs.unobserve(e.target);
+        }
+      });
+    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.04 });
+
+    alvos.forEach(function (el) {
+      el.classList.add('reveal-ready');
+      obs.observe(el);
+    });
+
+    /* rede de seguranca: se algo impedir o observer, tudo aparece */
+    setTimeout(function () {
+      alvos.forEach(function (el) { el.classList.add('reveal-in'); });
+    }, 2600);
+
+    /* ao trocar de aba, revela o que ja estiver visivel na nova aba */
+    document.querySelectorAll('.side-tab').forEach(function (t) {
+      t.addEventListener('click', function () {
+        setTimeout(function () {
+          document.querySelectorAll('.tab-panel.active .reveal-ready').forEach(function (el) {
+            var r = el.getBoundingClientRect();
+            if (r.top < window.innerHeight && r.bottom > 0) el.classList.add('reveal-in');
+          });
+        }, 60);
+      });
+    });
+
+    /* barra de progresso cresce a partir do zero no primeiro carregamento */
+    window.addEventListener('load', function () {
+      document.querySelectorAll('.progress-bar').forEach(function (b) {
+        var alvo = b.style.width;
+        if (!alvo) return;
+        b.style.width = '0%';
+        requestAnimationFrame(function () {
+          requestAnimationFrame(function () { b.style.width = alvo; });
+        });
+      });
+    });
+  } catch (e) {
+    /* em caso de erro, garante que nada fique invisivel */
+    document.querySelectorAll('.reveal-ready').forEach(function (el) {
+      el.classList.add('reveal-in');
+    });
+  }
+})();
+</script>
+</body>
 </html>
