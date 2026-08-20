@@ -2309,10 +2309,51 @@
       font-weight: 700;
       letter-spacing: .005em;
     }
-    .side-tab { font-size: 15px; }
 
-    /* respiro entre a barra e o card do titulo */
+    /* ============================================================
+       BARRA DE ABAS FLUIDA
+       Texto, emoji, espacamento e recheio encolhem junto com a
+       largura da janela. Abaixo de ~1120px as abas quebram em duas
+       linhas em vez de espremer o rotulo ate cortar.
+       ============================================================ */
     .side-tabs { margin-bottom: 34px; }
+
+    /* Restrito ao desktop: no celular vale o layout em grade de 2
+       colunas do bloco @media, que ja funciona bem. Sem este escopo
+       as regras abaixo venceriam a media query (que nao soma
+       especificidade) por virem depois no arquivo. */
+    @media (min-width: 761px) {
+      /* `cqi` mede a largura da propria barra, nao da janela. Assim o
+         texto acompanha o container mesmo quando ele encolhe por outro
+         motivo que nao o tamanho da tela. */
+      .side-tabs {
+        container-type: inline-size;
+        gap: clamp(4px, .45cqi, 7px);
+        padding: clamp(5px, .5cqi, 8px);
+        align-items: stretch;
+      }
+      .side-tab {
+        /* `min-width: 0` permite o botao encolher abaixo do tamanho
+           natural do conteudo; sem isso o texto transborda a borda.
+           O `flex-basis` de 168px faz a barra quebrar em duas linhas
+           antes de espremer o rotulo a ponto de cortar. */
+        min-width: 0;
+        flex: 1 1 168px;
+        gap: clamp(4px, .45cqi, 7px);
+        padding: 8px clamp(6px, .7cqi, 12px);
+        font-size: clamp(12px, .95cqi, 15px);
+      }
+      .side-tab-icon {
+        font-size: clamp(14px, 1.15cqi, 18px);
+        flex: 0 0 auto;
+      }
+      .side-tab-label {
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+    }
 
     /* ============ Botoes ============ */
     button {
