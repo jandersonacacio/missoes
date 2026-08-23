@@ -946,6 +946,53 @@
       .auth-name-badge { display: none !important; }
     }
 
+    /* ============================================================
+       MINI-CONTÊINERES para colunas "soltas" no celular (nível,
+       modo/jogadores, retorno, EXP base/classe, moeda, recompensa...).
+       O rótulo (data-mlabel) é escrito pelo JS lendo o cabeçalho real
+       de cada tabela — funciona em qualquer aba automaticamente.
+       Como são caixas inline, colunas vizinhas rotuladas se agrupam
+       lado a lado e quebram linha sozinhas, como uma fileira de chips.
+       ============================================================ */
+    @media (max-width: 760px) {
+      td[data-mlabel] {
+        display: inline-flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1px;
+        margin: 0 6px 6px 0;
+        padding: 5px 9px;
+        border-radius: 10px;
+        background: rgba(49, 112, 142, .07);
+        border: 1px solid rgba(49, 112, 142, .16);
+        vertical-align: top;
+        font-size: 12.5px;
+      }
+      td[data-mlabel]::before {
+        content: attr(data-mlabel);
+        font-size: 8.5px;
+        font-weight: 800;
+        letter-spacing: .04em;
+        text-transform: uppercase;
+        color: var(--gold);
+        line-height: 1.3;
+      }
+      /* o widget de retorno (data/horário + botões) é maior que um chip
+         comum — deixa a caixa esticar em vez de espremer os campos */
+      td[data-mlabel] .cooldown-widget { margin-top: 4px; }
+
+      .boss-parent-tag {
+        display: block;
+        margin-top: 8px;
+        padding-top: 7px;
+        border-top: 1px dashed var(--line);
+        font-size: 10px;
+        font-weight: 700;
+        color: var(--muted);
+      }
+      .boss-parent-tag::before { content: "↳ "; }
+    }
+
     @media (max-width: 400px) {
       /* Reforço extra para telas de celular bem estreitas (ex.: iPhone SE) */
       body { font-size: 12px; }
@@ -5529,6 +5576,82 @@
       el.classList.add('reveal-in');
     });
   }
+})();
+</script>
+<script>
+/* Organização das tabelas no celular: rotula colunas "soltas" (nível, modo,
+   retorno, EXP base/classe, moeda, recompensa...) com um pequeno rótulo,
+   lendo o cabeçalho real da tabela — funciona em qualquer aba, mesmo que
+   novas colunas sejam adicionadas depois, sem precisar editar CSS a cada vez.
+   Só adiciona um atributo (data-mlabel); a aparência de mini-container fica
+   inteiramente no CSS mobile, então no computador nada muda. Isolado e
+   defensivo: qualquer falha aqui não pode afetar o app. */
+(function () {
+  try {
+    var ROTULOS = {
+      'Nível': 'Nível', 'Nv.': 'Nível',
+      'Modo': 'Jogadores',
+      'Retorno': 'Retorno',
+      'EXP base': 'EXP base', 'EXP Base': 'EXP base',
+      'EXP classe': 'EXP classe', 'EXP Classe': 'EXP classe',
+      'Moeda': 'Moeda',
+      'Premiação principal': 'Recompensa',
+      'Entrega': 'Entrega',
+      'Mapa': 'Local'
+    };
+    var SEM_ROTULO = ['check-cell', 'map-cell', 'instance', 'mission', 'note-cell'];
+
+    document.querySelectorAll('table').forEach(function (table) {
+      var ths = table.querySelectorAll('thead th');
+      if (!ths.length) return;
+      var cabecalhos = Array.prototype.map.call(ths, function (th) {
+        return th.textContent.replace(/\s+/g, ' ').trim();
+      });
+
+      var linhas = table.querySelectorAll('tbody > tr');
+      linhas.forEach(function (linha) {
+        var celulas = linha.children;
+        // colunas desalinhadas com o cabeçalho (ex.: linha de título de grupo
+        // com colspan) — pula a linha inteira por segurança.
+        if (celulas.length !== cabecalhos.length) return;
+
+        for (var i = 2; i < celulas.length; i++) {
+          var td = celulas[i];
+          var rotulo = ROTULOS[cabecalhos[i]];
+          if (!rotulo) continue;
+          var pular = SEM_ROTULO.some(function (c) { return td.classList.contains(c); });
+          if (pular || td.querySelector('.boss') || td.querySelector('textarea')) continue;
+          td.dataset.mlabel = rotulo;
+        }
+      });
+    });
+  } catch (e) { /* silencioso: pior caso, a coluna fica sem rótulo */ }
+})();
+
+/* Legenda com o nome da instância/missão logo abaixo do sprite do monstro —
+   só aparece no celular (ver CSS de .boss-parent-tag), para ajudar a
+   identificar a qual missão aquele monstro pertence ao rolar a lista. */
+(function () {
+  try {
+    document.querySelectorAll('.mission-row').forEach(function (linha) {
+      var boss = linha.querySelector('.boss');
+      if (!boss || boss.querySelector('.boss-parent-tag')) return;
+      var tituloEl = linha.querySelector('.instance') || linha.querySelector('.mission');
+      if (!tituloEl) return;
+      // usa só o nome principal: remove sub-texto (NPC, localização, <br>)
+      // pra não colar duas frases sem espaço, tipo "NoggroadNPC: Lily Blanc"
+      var clone = tituloEl.cloneNode(true);
+      clone.querySelectorAll('small, .boss-note, .npc-loc, br').forEach(function (el) {
+        if (el.tagName === 'BR') el.replaceWith(' '); else el.remove();
+      });
+      var texto = clone.textContent.replace(/\s+/g, ' ').trim();
+      if (!texto) return;
+      var legenda = document.createElement('div');
+      legenda.className = 'boss-parent-tag';
+      legenda.textContent = texto;
+      boss.appendChild(legenda);
+    });
+  } catch (e) { /* silencioso */ }
 })();
 </script>
 </body>
