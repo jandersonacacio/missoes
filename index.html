@@ -358,17 +358,34 @@
       width: 34px;
       height: 34px;
       padding: 0;
-      border: none;
-      background: none;
-      color: var(--muted);
+      border: 1.5px solid rgba(49, 112, 142, .55);
+      border-radius: 10px;
+      background: rgba(49, 112, 142, .2);
+      color: var(--gold);
       cursor: pointer;
-      opacity: .65;
-      transition: opacity .15s ease, color .15s ease, transform .15s ease;
+      opacity: 1;
+      box-shadow: 0 1px 4px rgba(22, 36, 44, .12);
+      transition: opacity .15s ease, color .15s ease, transform .15s ease,
+                  background .15s ease, border-color .15s ease, box-shadow .15s ease;
       flex: none;
     }
-    .farm-toggle-btn svg { width: 24px; height: 24px; }
-    .farm-toggle-btn:hover { opacity: 1; transform: scale(1.08); }
-    .farm-toggle-btn.is-active { opacity: 1; color: var(--gold); }
+    .farm-toggle-btn svg { width: 22px; height: 22px; }
+    /* Aro tracejado + título ajudam a comunicar "isto é um botão clicável,
+       toque para adicionar esta missão ao Mapa de Farm" — mesmo antes de
+       qualquer interação, sem depender de hover (que não existe no celular). */
+    .farm-toggle-btn:hover {
+      opacity: 1;
+      transform: scale(1.08);
+      background: rgba(49, 112, 142, .22);
+      box-shadow: 0 3px 9px rgba(22, 36, 44, .16);
+    }
+    .farm-toggle-btn.is-active {
+      opacity: 1;
+      color: #fff;
+      background: var(--gold);
+      border-color: transparent;
+      box-shadow: 0 3px 10px rgba(49, 112, 142, .4);
+    }
     .farm-toggle-btn.is-active svg { fill: currentColor; }
 
     .quest-check {
@@ -861,41 +878,40 @@
       /* Reconhecimento de dispositivo móvel via viewport (funciona em qualquer
          navegador/aparelho: Chrome ou Safari, Android ou iPhone) — mantém o
          layout de computador intacto acima deste breakpoint.
-         Toda a estrutura abaixo roda ~10% mais compacta do que a versão
-         anterior (referência: teste do usuário em zoom de 80–90% no navegador). */
+         Estrutura em ~80% do tamanho original (pedido do usuário). */
 
-      .app { width: min(100% - 18px, 1590px); margin-top: 9px; }
-      body { font-size: 12.5px; }
-      .hero { padding: 18px 14px; border-radius: 15px; }
-      .hero::after { font-size: 90px; }
-      .eyebrow { font-size: 9px; }
-      h1 { font-size: clamp(21px, 7.2vw, 29px); }
-      .subtitle { font-size: 11.5px; text-align: justify; }
-      .stats { grid-template-columns: 1fr 1fr; gap: 7px; }
-      .stat { padding: 9px 11px; }
-      .stat span { font-size: 8.5px; }
-      .stat strong { font-size: 14.5px; margin-top: 2px; }
-      .toolbar { grid-template-columns: 1fr; padding: 9px; gap: 7px; }
+      .app { width: min(100% - 18px, 1590px); margin-top: 8px; }
+      body { font-size: 11px; }
+      .hero { padding: 16px 13px; border-radius: 13px; }
+      .hero::after { font-size: 80px; }
+      .eyebrow { font-size: 8px; }
+      h1 { font-size: clamp(19px, 6.4vw, 26px); }
+      .subtitle { font-size: 10px; text-align: justify; }
+      .stats { grid-template-columns: 1fr 1fr; gap: 6px; }
+      .stat { padding: 8px 10px; }
+      .stat span { font-size: 7.5px; }
+      .stat strong { font-size: 13px; margin-top: 2px; }
+      .toolbar { grid-template-columns: 1fr; padding: 8px; gap: 6px; }
       .actions { justify-content: stretch; }
-      .actions button { flex: 1 1 126px; }
-      button { font-size: 11px; min-height: 34px; padding: 0 9px; }
-      input[type="search"] { font-size: 12px; min-height: 36px; }
-      .section-head { align-items: flex-start; padding: 12px 13px; }
-      .section-head h2 { font-size: 16px; }
-      .section-count { font-size: 10px; }
+      .actions button { flex: 1 1 112px; }
+      button { font-size: 9.5px; min-height: 30px; padding: 0 8px; }
+      input[type="search"] { font-size: 10.5px; min-height: 32px; }
+      .section-head { align-items: flex-start; padding: 10px 11px; }
+      .section-head h2 { font-size: 14.5px; }
+      .section-count { font-size: 9px; }
 
       .table-wrap { overflow: visible; }
       table, thead, tbody, th, td, tr { display: block; min-width: 0; }
       thead { display: none; }
-      tbody { padding: 7px; }
+      tbody { padding: 6px; }
       .mission-row {
         position: relative;
-        padding: 13px 11px 11px 50px;
+        padding: 12px 10px 10px 46px;
         margin: 6px 0;
         border: 1px solid rgba(255,255,255,.09);
-        border-radius: 13px;
+        border-radius: 11px;
         background: rgba(255,255,255,.025);
-        font-size: 12px;
+        font-size: 10.5px;
       }
       .mission-row td { padding: 4px 0; border: 0; }
 
@@ -906,19 +922,22 @@
          (`.mission-row > td:first-child { position: relative }`, usada no hover
          de computador) tem especificidade maior e, sem isso, vencia a posição
          absoluta aqui — fazendo o checkbox "cair" no meio do card em vez do canto. */
-      .check-cell { position: absolute !important; left: 11px; top: 11px; width: auto; padding: 4px; }
-      .map-cell { position: absolute; left: 11px; top: 47px; width: auto; padding: 4px; }
-      .quest-check { width: 27px; height: 27px; border-radius: 7px; }
-      .farm-toggle-btn { width: 27px; height: 27px; }
-      .farm-toggle-btn svg { width: 18px; height: 18px; }
-      .quest-check::after { font-size: 19px; }
+      .check-cell { position: absolute !important; left: 10px; top: 10px; width: auto; padding: 4px; }
+      .map-cell { position: absolute; left: 10px; top: 44px; width: auto; padding: 4px; }
+      .quest-check { width: 24px; height: 24px; border-radius: 6px; }
+      /* Botão do Mapa de Farm mantido um pouco maior que o resto (proporção
+         "de destaque"), já que agora tem fundo e borda próprios — ver estilo
+         base de .farm-toggle-btn, que vale tanto no mobile quanto no desktop. */
+      .farm-toggle-btn { width: 26px; height: 26px; }
+      .farm-toggle-btn svg { width: 15px; height: 15px; }
+      .quest-check::after { font-size: 17px; }
 
-      .instance { font-size: 14px; }
+      .instance { font-size: 12.5px; }
       .mission { text-align: justify; }
-      .boss { min-width: 0; margin-top: 3px; gap: 7px; }
-      .boss-name { font-size: 11.5px; }
-      .boss-note { font-size: 8px; }
-      .reward { font-size: 11.5px; }
+      .boss { min-width: 0; margin-top: 3px; gap: 6px; }
+      .boss-name { font-size: 10px; }
+      .boss-note { font-size: 7px; }
+      .reward { font-size: 10px; }
       .reward::before { color: var(--muted); font-weight: 600; margin-right: 6px; }
       .points::before { content: "Fichas: "; }
       .exp::before { content: "EXP: "; }
@@ -936,8 +955,8 @@
       .pool-inline-grid { gap: 6px; }
       .combo-items { gap: 6px; }
 
-      .mission-note { font-size: 10.5px; }
-      .general-notes textarea { font-size: 12px; }
+      .mission-note { font-size: 9px; }
+      .general-notes textarea { font-size: 10.5px; }
 
       /* O crachá flutuante com o nome do Google fica fixo por cima do conteúdo
          ao rolar a página — no celular, isso tampava o início dos títulos das
@@ -995,11 +1014,11 @@
 
     @media (max-width: 400px) {
       /* Reforço extra para telas de celular bem estreitas (ex.: iPhone SE) */
-      body { font-size: 12px; }
-      h1 { font-size: clamp(20px, 7.2vw, 26px); }
+      body { font-size: 10.5px; }
+      h1 { font-size: clamp(18px, 6.4vw, 22px); }
       .stats { grid-template-columns: 1fr; }
-      .instance { font-size: 13px; }
-      .mission-row { padding-left: 46px; }
+      .instance { font-size: 11.5px; }
+      .mission-row { padding-left: 42px; }
     }
 
     .app { position: relative; }
@@ -2267,9 +2286,9 @@
   }
 
   @media (max-width: 760px) {
-    .drops-section { padding: 15px 13px; }
-    .drops-icon { width: 20px; height: 20px; } #panel-eden .drops-icon { width: 31px; height: 31px; }
-    .drops-rune-icon { width: 24px; height: 24px; }
+    .drops-section { padding: 13px 11px; }
+    .drops-icon { width: 18px; height: 18px; } #panel-eden .drops-icon { width: 27px; height: 27px; }
+    .drops-rune-icon { width: 21px; height: 21px; }
     .drops-item { white-space: normal; }
     /* Preço sempre alinhado ao final da linha (à direita), mesmo quando o
        nome do item quebra em duas linhas — antes ficava "solto" à esquerda. */
@@ -2512,10 +2531,10 @@
 
     /* ============ Mapa de farm ============ */
     .farm-toggle-btn {
-      transition: transform .18s cubic-bezier(.16,1,.3,1), opacity .18s ease, color .18s ease;
+      transition: transform .18s cubic-bezier(.16,1,.3,1), opacity .18s ease, color .18s ease,
+                  background .18s ease, border-color .18s ease, box-shadow .18s ease;
     }
     .farm-toggle-btn:hover { transform: scale(1.14) rotate(-6deg); opacity: 1; }
-    .farm-toggle-btn.is-active { color: var(--gold); opacity: 1; }
 
     /* ============ Notas ============ */
     .note-card { transition: border-color .2s ease, box-shadow .2s ease, background .2s ease; }
